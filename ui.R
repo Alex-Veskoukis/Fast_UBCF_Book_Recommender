@@ -12,9 +12,7 @@ shinyUI(
     dashboardPage(
           skin = "black",
           dashboardHeader(),
-          # dashboardHeader(title = span(
-          #   tags$img(src="EXUSlogo.jpg", width = '70%'))),
-          
+
           dashboardSidebar(disable = TRUE),
 
           dashboardBody(includeCSS("css/books.css"),
