@@ -36,6 +36,11 @@ books  <- fread("data/BX-Books.csv", sep=";")
 books <- books[,.(book_id = ISBN, image_url = `Image-URL-S`, authors =  `Book-Author`)]
 books <- books[book_id %in% ratings$ISBN]
 
+# for(i in 1:nrow(books)){
+#   GET(url = books[i,image_url], 
+#       write_disk(paste0('book_covers/',gsub('http://images.amazon.com/images/P/','',books[i,image_url])),overwrite = T))
+# }
+
 ratings <- ratings[, lapply(.SD, function(x) 
   as.numeric(factor(x, levels=unique(x))))]
 
@@ -60,7 +65,7 @@ shinyServer(function(input, output, session) {
     lapply(1:num_rows, function(i) {
       list(fluidRow(lapply(1:num_books, function(j) {
         list(box(width = 2,
-                 div(style = "text-align:center", img(src = books$image_url[(i - 1) * num_books + j], style = "max-height:150")),
+                 div(style = "text-align:center", img(src = gsub('http://images.amazon.com/images/P/','book_covers/',books$image_url[(i - 1) * num_books + j]), style = "max-height:150")),
                  div(style = "text-align:center; color: #999999; font-size: 80%", books$authors[(i - 1) * num_books + j]),
                  div(style = "text-align:center", strong(books$title[(i - 1) * num_books + j])),
                  div(style = "text-align:center; font-size: 150%; color: #f0ad4e;", ratingInput(paste0("select_", books$book_id[(i - 1) * num_books + j]), label = "", dataStop = 5)))) #00c0ef
