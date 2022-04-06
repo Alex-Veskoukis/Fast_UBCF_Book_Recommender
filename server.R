@@ -36,10 +36,6 @@ books  <- fread("data/BX-Books.csv", sep=";")
 books <- books[,.(book_id = ISBN, image_url = `Image-URL-S`, authors =  `Book-Author`)]
 books <- books[book_id %in% ratings$ISBN]
 
-# for(i in 1:nrow(books)){
-#   GET(url = books[i,image_url], 
-#       write_disk(paste0('book_covers/',gsub('http://images.amazon.com/images/P/','',books[i,image_url])),overwrite = T))
-# }
 
 ratings <- ratings[, lapply(.SD, function(x) 
   as.numeric(factor(x, levels=unique(x))))]
@@ -122,7 +118,8 @@ shinyServer(function(input, output, session) {
           div(style = "text-align:center", 
               a(href = paste0('https://www.goodreads.com/book/show/', books$best_book_id[recom_result$Book_id[(i - 1) * num_books + j]]), 
                 target='blank', 
-                img(src = books$image_url[recom_result$Book_id[(i - 1) * num_books + j]], height = 150))
+                
+                img(src = gsub('http://images.amazon.com/images/P/','book_covers/',books$image_url[(i - 1) * num_books + j]), height = 150))
              ),
           div(style = "text-align:center; color: #999999; font-size: 80%", 
               books$authors[recom_result$Book_id[(i - 1) * num_books + j]]
